@@ -1,0 +1,31 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  rabbitmq:
+    depends_on:
+      - redis
+    image: rabbitmq:3
+    ports:
+      - 5672:5672
+  web:
+    depends_on:
+      - rabbitmq
+    build:
+      context: './web_service'
+      dockerfile: ../dockerfiles/web.Dockerfile
+    ports:
+      - 3000:3000
+  user:
+    depends_on:
+      - rabbitmq
+    build:
+      context: './user_service'
+      dockerfile: ../dockerfiles/user.Dockerfile
+  email:
+    depends_on:
+      - rabbitmq
+    build:
+      context: './email_service'
+      dockerfile: ../dockerfiles/email.Dockerfile
